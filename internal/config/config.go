@@ -4,6 +4,8 @@ import (
 	"errors"
 	"os"
 	"strconv"
+
+	_ "github.com/joho/godotenv/autoload"
 )
 
 type Config struct {

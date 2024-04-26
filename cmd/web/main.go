@@ -25,7 +25,5 @@ func main() {
 
 	log.Printf("Server is running on Port %d", Config.PORT)
 	err = http.ListenAndServe(fmt.Sprintf(":%d", Config.PORT), mux)
-	if err != nil {
-		log.Fatal(err)
-	}
+	log.Fatal(err)
 }

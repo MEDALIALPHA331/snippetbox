@@ -2,13 +2,25 @@ package main
 
 import (
 	"fmt"
+	"html/template"
+	"log"
 	"net/http"
 	"strconv"
 )
 
 func HandleIndex(writer http.ResponseWriter, req *http.Request) {
 	writer.Header().Add("Server", "Go")
-	writer.Write([]byte("Hello from snippetbox"))
+
+	homePagePath := "./ui/html/pages/home.tmpl.html"
+	ts, err := template.ParseFiles(homePagePath)
+
+	if err != nil {
+		log.Fatal(err.Error())
+		http.Error(writer, "Internal Server Error", http.StatusInternalServerError)
+		return
+	}
+
+	ts.Execute(writer, nil)
 }
 
 func HandleGetItem(writer http.ResponseWriter, req *http.Request) {
