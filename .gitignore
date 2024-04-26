@@ -8,6 +8,8 @@
 *.so
 *.dylib
 
+.secrets
+/bin
 /tmp
 
 # Test binary, built with `go test -c`

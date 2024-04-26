@@ -11,8 +11,13 @@ import (
 func HandleIndex(writer http.ResponseWriter, req *http.Request) {
 	writer.Header().Add("Server", "Go")
 
-	homePagePath := "./ui/html/pages/home.tmpl.html"
-	ts, err := template.ParseFiles(homePagePath)
+	files := []string{
+		"./ui/html/base.tmpl",
+		"./ui/html/partials/nav.tmpl",
+		"./ui/html/pages/home.tmpl",
+	}
+
+	ts, err := template.ParseFiles(files...)
 
 	if err != nil {
 		log.Fatal(err.Error())
@@ -20,7 +25,11 @@ func HandleIndex(writer http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	ts.Execute(writer, nil)
+	err = ts.ExecuteTemplate(writer, "base", nil)
+	if err != nil {
+		log.Print(err.Error())
+		http.Error(writer, "Internal Server Error", http.StatusInternalServerError)
+	}
 }
 
 func HandleGetItem(writer http.ResponseWriter, req *http.Request) {

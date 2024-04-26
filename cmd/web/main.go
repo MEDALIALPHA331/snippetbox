@@ -18,6 +18,10 @@ func main() {
 
 	mux := http.NewServeMux()
 
+	fileServer := http.FileServer(http.Dir("./ui/static/"))
+
+	mux.Handle("GET /static/", http.StripPrefix("/static", fileServer))
+
 	mux.HandleFunc("GET /{$}", HandleIndex)
 	mux.HandleFunc("GET /snippet/view/{id}", HandleGetItem)
 	mux.HandleFunc("GET /snippet/create", HandleSnippetForm)
