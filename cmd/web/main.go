@@ -1,6 +1,7 @@
 package main
 
 import (
+	"flag"
 	"fmt"
 	"log"
 	"net/http"
@@ -8,17 +9,24 @@ import (
 	"github.com/MEDALIALPHA331/snippetbox/internal/config"
 )
 
-var Config config.Config
+var cfg config.Config
 
 func main() {
-	err := Config.ParseConfigFromEnv()
-	if err != nil {
-		log.Fatal(err)
-	}
+	// err := Config.ParseConfigFromEnv()
+	// if err != nil {
+	// 	log.Fatal(err)
+	// }
+
+	flag.IntVar(&cfg.PORT, "port", 5000, "HTTP Port")
+	flag.StringVar(&cfg.Address, "addr", ":5000", "HTTP Network adress")
+	flag.StringVar(&cfg.StaticDirPath, "static", "./ui/static/", "Static files dir path")
+	flag.Parse()
+
+	
 
 	mux := http.NewServeMux()
 
-	fileServer := http.FileServer(http.Dir("./ui/static/"))
+	fileServer := http.FileServer(http.Dir(cfg.StaticDirPath))
 
 	mux.Handle("GET /static/", http.StripPrefix("/static", fileServer))
 
@@ -27,7 +35,7 @@ func main() {
 	mux.HandleFunc("GET /snippet/create", HandleSnippetForm)
 	mux.HandleFunc("POST /snippet/create", HandlePostSnippet)
 
-	log.Printf("Server is running on Port %d", Config.PORT)
-	err = http.ListenAndServe(fmt.Sprintf(":%d", Config.PORT), mux)
+	log.Printf("Server is running on Port %d", cfg.PORT)
+	err := http.ListenAndServe(fmt.Sprintf(":%d", cfg.PORT), mux)
 	log.Fatal(err)
 }

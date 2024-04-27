@@ -10,6 +10,8 @@ import (
 
 type Config struct {
 	PORT int
+	Address string
+	StaticDirPath string
 }
 
 func (c *Config) ParseConfigFromEnv() error {
