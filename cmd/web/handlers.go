@@ -3,12 +3,11 @@ package main
 import (
 	"fmt"
 	"html/template"
-	"log"
 	"net/http"
 	"strconv"
 )
 
-func HandleIndex(writer http.ResponseWriter, req *http.Request) {
+func (app *Application) HandleIndex(writer http.ResponseWriter, req *http.Request) {
 	writer.Header().Add("Server", "Go")
 
 	files := []string{
@@ -20,19 +19,19 @@ func HandleIndex(writer http.ResponseWriter, req *http.Request) {
 	ts, err := template.ParseFiles(files...)
 
 	if err != nil {
-		log.Fatal(err.Error())
+		app.logger.Error(err.Error())
 		http.Error(writer, "Internal Server Error", http.StatusInternalServerError)
 		return
 	}
 
 	err = ts.ExecuteTemplate(writer, "base", nil)
 	if err != nil {
-		log.Print(err.Error())
+		app.logger.Error(err.Error())
 		http.Error(writer, "Internal Server Error", http.StatusInternalServerError)
 	}
 }
 
-func HandleGetItem(writer http.ResponseWriter, req *http.Request) {
+func (app *Application) HandleGetItem(writer http.ResponseWriter, req *http.Request) {
 	id, err := strconv.Atoi(req.PathValue("id"))
 	if err != nil || id < 1 {
 		http.NotFound(writer, req)
@@ -41,11 +40,11 @@ func HandleGetItem(writer http.ResponseWriter, req *http.Request) {
 
 	fmt.Fprintf(writer, "wow the id of the view is %d", id)
 }
-func HandleSnippetForm(writer http.ResponseWriter, req *http.Request) {
+func (app *Application) HandleSnippetForm(writer http.ResponseWriter, req *http.Request) {
 	writer.Write([]byte("Hello world"))
 }
 
-func HandlePostSnippet(writer http.ResponseWriter, req *http.Request) {
+func (app *Application) HandlePostSnippet(writer http.ResponseWriter, req *http.Request) {
 	writer.WriteHeader(http.StatusCreated)
 
 	writer.Write([]byte("snippet created...."))
