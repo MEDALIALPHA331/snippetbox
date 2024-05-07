@@ -38,18 +38,11 @@ func main() {
 	flag.StringVar(&cfg.StaticDirPath, "static", "./ui/static/", "Static files dir path")
 	flag.Parse()
 
-	var conString = "root:snippetboxpwd@/snippetsdb"
-	db, err := sql.Open("mysql", conString)
+	db, err := startDb()
 	if err != nil {
 		logger.Error(fmt.Sprintf("Failed to connect to db: %v", err.Error()))
 	}
 	defer db.Close()
-
-	err = db.Ping()
-
-	if err != nil {
-		logger.Error(fmt.Sprintf("Database is unreachable: %v", err.Error()))
-	}
 
 	mux := app.routes()
 
@@ -57,4 +50,20 @@ func main() {
 	err = http.ListenAndServe(fmt.Sprintf(":%d", cfg.PORT), mux)
 	logger.Error(err.Error())
 	os.Exit(1)
+}
+
+func startDb() (*sql.DB, error) {
+	var conString = "root:snippetboxpwd@/snippetsdb"
+	db, err := sql.Open("mysql", conString)
+
+	if err != nil {
+		return nil, err
+	}
+
+	err = db.Ping()
+	if err != nil {
+		return nil, err
+	}
+
+	return db, nil
 }
