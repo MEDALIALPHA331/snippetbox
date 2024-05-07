@@ -19,15 +19,13 @@ func (app *Application) HandleIndex(writer http.ResponseWriter, req *http.Reques
 	ts, err := template.ParseFiles(files...)
 
 	if err != nil {
-		app.logger.Error(err.Error())
-		http.Error(writer, "Internal Server Error", http.StatusInternalServerError)
+		app.serverError(writer, req, err)
 		return
 	}
 
 	err = ts.ExecuteTemplate(writer, "base", nil)
 	if err != nil {
-		app.logger.Error(err.Error())
-		http.Error(writer, "Internal Server Error", http.StatusInternalServerError)
+		app.serverError(writer, req, err)
 	}
 }
 

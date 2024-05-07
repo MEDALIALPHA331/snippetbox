@@ -27,5 +27,8 @@ func (c *Config) ParseConfigFromEnv() error {
 
 	c.PORT = PORT
 
+
+	
+
 	return nil
 }
