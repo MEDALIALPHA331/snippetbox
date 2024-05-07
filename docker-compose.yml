@@ -1,0 +1,15 @@
+# Use root/example as user/password credentials
+version: "3.1"
+
+services:
+  db:
+    image: mysql
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: snippetboxpwd
+      MYSQL_USER: dali
+      MYSQL_PASSWORD: dali123
+      MYSQL_DATABASE: snippetsdb
+
+    ports:
+      - "3306:3306"

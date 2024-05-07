@@ -1,6 +1,7 @@
 package main
 
 import (
+	"database/sql"
 	"flag"
 	"fmt"
 	"log/slog"
@@ -8,6 +9,7 @@ import (
 	"os"
 
 	"github.com/MEDALIALPHA331/snippetbox/internal/config"
+	_ "github.com/go-sql-driver/mysql"
 )
 
 type Application struct {
@@ -35,6 +37,19 @@ func main() {
 	flag.StringVar(&cfg.Address, "addr", ":5000", "HTTP Network adress")
 	flag.StringVar(&cfg.StaticDirPath, "static", "./ui/static/", "Static files dir path")
 	flag.Parse()
+
+	var conString = "root:snippetboxpwd@/snippetsdb"
+	db, err := sql.Open("mysql", conString)
+	if err != nil {
+		logger.Error(fmt.Sprintf("Failed to connect to db: %v", err.Error()))
+	}
+	defer db.Close()
+
+	err = db.Ping()
+
+	if err != nil {
+		logger.Error(fmt.Sprintf("Database is unreachable: %v", err.Error()))
+	}
 
 	mux := app.routes()
 
